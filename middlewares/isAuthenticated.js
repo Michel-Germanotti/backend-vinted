@@ -7,8 +7,14 @@ const isAuthenticated = async (req, res, next) => {
         const token = req.headers.authorization.replace("Bearer ", "");
         // just key account
         const user = await User.findOne({token: token}).select("account _id");
-        req.user = user;
-        next();
+        if (user) {
+          req.user = user;
+          next();
+        } else {
+          return res.status(401).json({
+            message: "Unauthorized",
+          });
+        }
       } else {
         // if not user 
         return res.status(401).json({ message: "Unauthorized" });
