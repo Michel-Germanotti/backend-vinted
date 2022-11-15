@@ -193,7 +193,7 @@ router.post(
       let sortObj = {};
       let filtre_price;
       //console.log(req.query.sort);
-      let filterOffers;
+      let offers;
       if (req.query.priceMin && req.query.priceMax) {
         filters.product_price = {
           $gte: Number(req.query.priceMin),
@@ -227,18 +227,18 @@ router.post(
       const skip = (Number(req.query.page) - 1) * limit;
       //console.log("sortObj", sortObj);
       //console.log(filters);
-      filterOffers = await Offer.find(filters)
+      offers = await Offer.find(filters)
         .populate({ path: "owner", select: "account" })
         .sort(sortObj)
         //.select("_id product_name product_price owner")
         .skip(skip)
         .limit(limit);
   
-      //console.log("filterOffers", filterOffers);
+      //console.log("offers", offers);
   
       const count = await Offer.countDocuments(filters);
   
-      res.status(200).json({ count, filterOffers });
+      res.status(200).json({ count, offers });
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
